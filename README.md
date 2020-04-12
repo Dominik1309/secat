@@ -12,10 +12,16 @@ cd secat
 
 ```
 
-Activate the just created pythond environment
+Activate the just created python environment
 ```console
 C:\Users\<User>\source\secat>.\venv\Scripts\activate
-(secat) C:\Users\<User>\source\secat>
+(venv) C:\Users\<User>\source\secat>
+```
+
+Activating on unix
+```
+nichil@theMachine:~/source/secat$ source venv/bin/activate
+(venv) nichil@theMachine:~/source/secat$
 ```
 
 Now install requirements
