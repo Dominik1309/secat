@@ -157,7 +157,7 @@ print(ports)
 
 EOF
 ```
-The resulting Ports were [22, 7538]
-Webserver is listening on Port 7538
-Webservers output of a GET Request is Q29uZ3JhdHVyYXRpb24sIGEgd2lubmVyIGlzIHlvdSE=
-This seems to be an output from openssh, it is not an hash-digest. We used it in the first lab.
+The resulting Ports were [22, 7538]  
+Webserver is listening on Port 7538  
+Webservers output of a GET Request is Q29uZ3JhdHVyYXRpb24sIGEgd2lubmVyIGlzIHlvdSE=  
+This seems to be an output from openssh, it is not an hash-digest. We used it in the first lab.  
