@@ -2,23 +2,19 @@
 
 ## ARP Poisoning and Portscan
 
-Install scapy with all main dependancies
+Install scapy
 ```bash
-sudo apt install python3-scapy
+python3 -m pip install scapy
 ```
 
 Start scapy
 ```bash
-sudo scapy3
+sudo scapy
 ```
 
-> It took me fucking 6 hours to understand and getting things ready for using this fucking shit of a fucking tool mother fucker, I am so pissed !!
+> It took me f..ing 6 hours to understand and getting things ready for using this fu..ing sh.t of a fu..ing tool mother fu..er, I am so pissed !!
 
-To simplify all the usage: We have got differenct python Classes for different packet types. At first we are going to create a Ethernet packet followed by a ARP packet. To append two layers, we will use the operator / 
- 
-To show all available fields of a packet we can use the function list(PACKET) where PACKET can be Ether or ARP or anything else available. 
-
-At first we will use the command `arp -a` to list the local arp table of our server
+To simplify all the usage: We have got different python Classes for different packet types. At first we are going to create a Ethernet packet followed by a ARP packet. To append two layers, we will use the operator / To show all available fields of a packet we can use the function list(PACKET) where PACKET can be Ether or ARP or anything else available. At first we will use the command `arp -a` to list the local arp table of our server
 
 ```console
 nichil@secat-02:~$ arp -a
@@ -31,7 +27,7 @@ _gateway (192.168.130.2) at 00:50:56:e3:fb:3c [ether] on ens33
 
 Let's build up a broadcast ARP request
 
-```python
+```console
 >>> arpbc=Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(op="who-has", pdst="192.168.130.2")
 >>> arpbc.show()
 ###[ Ethernet ]###
@@ -88,8 +84,9 @@ from scapy.layers.l2 import ARP, Ether
 from scapy.sendrecv import srp, sendp, send
 from time import sleep
 
-__author__ = "Nichil Strasser"
-__email__ = "nichil.strasser@gmail.com"
+__author__ = "nichil"
+__date__ = "12.04.2020"
+__github__ = "https://github.com/starvis"
 
 
 def main():
@@ -131,7 +128,6 @@ def get_mac(ip):
 if __name__ == "__main__":
     main()
 
-
 ```
 
 In order to test the spoofing I am going to use tcpdump and nc. I will listen on Port 6969 on theMachine and open a connection from secat-02 to theMachine on Port 6969. As the Mac address on the ARP table of secat-02 for the gateway got swapped with mine, I will receive the messages sent over port 6969 on secat-01 which is the MITM in this scenario. The packets will be forwarded because I have enabled ipv4 forwarding. The packets are captured with tcpdump using the -X arg to see ASCII encoded data. 
@@ -143,4 +139,25 @@ In order to test the spoofing I am going to use tcpdump and nc. I will listen on
 
 Login to its.fh-campuswien.ac.at is the one which was set in lab3
 
-... tbc
+The code in the instructions does not work for me so I wrote my own
+```
+sudo /etc/scapy/run_scapy << EOF
+conf.verb = False
+ip = '172.16.51.142'
+ports = []
+for i in range(1,10000):
+    packages = IP(dst=ip, ttl=43) / TCP(dport=i, flags='S')
+    results, unanswered = sr(packages, timeout=10, iface='ens18')
+    for result in results:
+        if result[1][1].flags == 'SA':
+            ports.append(result[1][1].sport)
+
+print(ports)
+    
+
+EOF
+```
+The resulting Ports were [22, 7538]
+Webserver is listening on Port 7538
+Webservers output of a GET Request is Q29uZ3JhdHVyYXRpb24sIGEgd2lubmVyIGlzIHlvdSE=
+This seems to be an output from openssh, it is not an hash-digest. We used it in the first lab.

@@ -14,24 +14,32 @@ def send_syn(ip, dport, iface):
 
 def main():
     # print(conf)
-    # enable debug log
-    conf.logLevel = 10
+    # do not output anything from scapy
+    conf.verb = False
+
     ip = '192.168.130.128'
-    dport = 22
-    sport = 53231
+    dport = 1, 1024
     iface = 'VMware Network Adapter VMnet8'
 
+    open_ports = []
+
+    print("Searching .. ")
+
     # port syntax is either single 443 or range (1, 1024)
-    results, unanswered = send_syn(ip=ip, dport=dport, iface=iface)
+    for i in range(dport[0], dport[1]):
+        results, unanswered = send_syn(ip=ip, dport=i, iface=iface)
+        for result in results:
+            # get the response->[1] from sent packet->[0] and from the response get the 2nd tuple object
+            tcp = result[1][1]
+            # if syn and ack bits are set print the sourceport
+            if tcp.flags == 'SA':
+                open_ports.append(tcp.sport)
 
-    print(results)
+    print("Found open Ports:", open_ports)
 
-    for result in results:
-        if result[1][1].flags == 'SA':
-            print(result[1][1].sport)
     # for pout, pin in results:
     #     # only get packets with MF flag set
-    #     if pin.getlayer('IP').flags & b'001':
+    #     if pin.getlayer('IP').flags & 2:
     #         print(pin.getlayer('TCP').sport)
 
 
