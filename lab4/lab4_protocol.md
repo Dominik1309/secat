@@ -45,6 +45,10 @@ Let's build up a broadcast ARP request
      hwdst= None
      pdst= 192.168.130.2
 
+>>> response=sendp(arpbc)
+.
+Sent 1 packets.
+
 >>> response=srp(arpbc, timeout=2)
 Begin emission:
 ...Finished sending 1 packets.
